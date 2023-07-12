@@ -4,25 +4,14 @@ import math
 import random
 import math
 
-def init_data():
-    hr_data = read_excel_file('MBA_Stats_Project_Lab_03_07_2023.xlsx')
+
+def read_configuration_files():
+    hr_raw_data = read_excel_file('MBA_Stats_Project_Lab_03_07_2023.xlsx')
     contract_types = read_excel_file('contract_type_data_configuration.xlsx')
-    assigned_indecies = []
-    percentages_labels = {
-        'HR': 2,
-        'Marketing': 2,
-        'BezDev': 2,
-        'Sales': 6,
-        'Admin_And_Facilities': 4,
-        'Legal': 1,
-        'Product_Management': 10,
-        'IT_Support': 21,
-        'R_And_D': 22,
-        'Engineering': 25,
-        'Training': 2,
-        'Finance': 3,
-    }
-    #split_dataframe_by_percentages(percentages_labels, hr_data, 'Department')
+    departments_percentages = read_excel_file('departments_percentages_labels.xlsx')
+
+
+def init_data():
     """for index, contract_type in contract_types.iterrows():
         value = math.ceil((contract_type["Percentage"] / 100) * len(hr_data.index))
         for i in range(value):
@@ -34,44 +23,52 @@ def init_data():
                     break
             hr_data.at[index, 'Contract Type'] = contract_type["Code"]
             assigned_indecies.append(index)"""
-    hr_data['Date of birth'] = hr_data['Date of birth'].astype(str)
-    #hr_data['Year of birth'] = hr_data.apply(lambda x: x['Date of birth'].split('-')[0], axis=1)
-    #hr_data = convert_list_of_dictionaries_to_dataframe(assign_number_of_promotions(hr_data))
-    #hr_data['Current Salary'] = hr_data.apply(lambda x: get_current_salary(x['Grade'], axis=1))
-    #hr_data['Smoker'] = hr_data.apply(lambda x: random.randint(0, 1), axis=1)
-    #hr_data['PWD'] = hr_data.apply(lambda x: 0, axis=1)
-    #hr_data['Working Hours'] = hr_data.apply(lambda x: random.randint(150, 161), axis=1)
-    #hr_data['Contract renewal date'] = hr_data.apply(lambda x: get_renewal_date(), axis=1)
-    #hr_data['Contract renewal year'] = hr_data.apply(lambda x: x['Contract renewal date'].split('-')[0], axis=1)
-    hr_data['Caffein intake'] = hr_data.apply(lambda x: random.randint(60, 300), axis=1)
 
-    """pwd_rows = math.ceil((5 / 100) * len(hr_data.index))
-    for i in range(pwd_rows):
-        hr_data.at[random.randint(1, len(hr_data.index)), 'PWD'] = 1
+    #hr_data = convert_list_of_dictionaries_to_dataframe(assign_number_of_promotions(hr_data))
+
+    """
     employees_with_education_levels = assign_employees_education_levels(hr_data)
     hr_data = convert_list_of_dictionaries_to_dataframe(employees_with_education_levels)"""
-    write_excel_file(hr_data, 'MBA_Stats_Project_Lab_03_07_2023_Output.xlsx')
+    write_excel_file(hr_raw_data, 'MBA_Stats_Project_Lab_03_07_2023_Output.xlsx')
+
+
+def assign_working_hours(hr_raw_data):
+    """
+    Assign working hours based on contract type
+    :param hr_raw_data:
+    :return:
+    """
+
+
+def assign_contract_type(hr_raw_data):
+    """
+    Assign contract type
+    :param hr_raw_data:
+    :return:
+    """
+
+
+def get_graduated_year(age):
+    years_since_graduation = age - 22
+    current_year = int(datetime.datetime.now().date().strftime("%Y-%m-%d").split('-')[0])
+    return current_year - years_since_graduation
+
+
+def get_joining_date():
+    current_year, current_month, current_day = datetime.datetime.now().date().strftime("%Y-%m-%d").split('-')
+    current_year = int(current_year)
+    current_month = int(current_month)
+    current_day = int(current_day)
+    new_year = random.randint(current_year, current_year - 40)
+    new_month = random.randint(current_month, 1) if new_year == current_year else random.randint(1, 12)
+    new_day = random.randint(current_day, 1) if new_month == current_month else random.randint(1, 30)
+    return f"""{str(new_year)}-{str(new_month).zfill(2)}-{str(new_day).zfill(2)}"""
 
 
 def data_cleaning():
-
-    zones = {'Branch_1': ['Qatamya', 'Sheikh zayed', 'Tagamo', 'Maadi', 'Nasr City',
-             'Masr El-Gedida', 'Imbaba', 'Feisel', 'Benha'],
-             'Branch_2': ['Tanta', 'Sedi Beshr', 'Agamy', 'Miami', 'Smoha',
-             'El-Anfoshy', 'Zezeneia', 'Kafr Abdo']
-    }
-
-    branches = ['Branch_1', 'Branch_2']
     hr_data = read_excel_file('MBA_Stats_Project_Lab_03_07_2023_Output_V12.xlsx')
-    hr_data['Date of birth'] = hr_data['Date of birth'].astype(str)
-    hr_data['Contract renewal date'] = hr_data['Contract renewal date'].astype(str)
-    hr_data['Gender'] = hr_data.apply(lambda x: split_female_male(x['Name']), axis=1)
-    #hr_data['Age'] = hr_data.apply(lambda x: get_age(x['Year of birth']), axis=1)
-    #hr_data['Name'] = hr_data.apply(lambda x: construct_name(), axis=1)
-    """hr_data['Current Salary'] = hr_data.apply(lambda x: get_current_salary(x['Grade']), axis=1)
-    hr_data['Caffein intake'] = hr_data.apply(lambda x: random.randint(1, 10), axis=1)
-    hr_data['Contract type'] = hr_data.apply(lambda x: 3)"""
-    #hr_data['Zone'] = hr_data.apply(lambda x: random.choice(zones[x['Branch']]), axis=1)
+    hr_data['Contract type'] = hr_data.apply(lambda x: 3)
+    #
     #hr_data['Branch'] = hr_data.apply(lambda x: random.choice(branches), axis=1)
     performance = {
         'Poor': 5,
@@ -80,7 +77,6 @@ def data_cleaning():
         'Very good': 20,
         'Excellent': 5
     }
-    #split_dataframe_by_percentages(performance, hr_data, 'Performance')
     write_excel_file(hr_data, 'MBA_Stats_Project_Lab_03_07_2023_Output_V13.xlsx')
 
 
@@ -90,16 +86,14 @@ def split_female_male(fullName):
         'Laila', 'Afaf', 'Lelian', 'Wafaa', 'Menna', 'Mervat', 'Doaa',
         'Roqya'
     ]
-    first_name = fullName.split(' ')[0]
-    if first_name in females:
-        return 'F'
-    return 'M'
+    return 'F' if fullName.split(' ')[0] in females else 'M'
 
 
 def get_age(birth_year):
     current_year, current_month, current_day = datetime.datetime.now().date().strftime("%Y-%m-%d").split('-')
     current_year = int(current_year)
     return current_year - birth_year
+
 
 def construct_name():
     first_names = ['Ahmed', 'Mohamed', 'Gamal', 'Nasser',
@@ -111,6 +105,7 @@ def construct_name():
                   'Islam', 'Adham', 'Hesham', 'Salah',
                   'Morad', 'Fayed', 'Ashraf', 'Omar', 'Adam', 'Hashem', 'Ali', 'Hadi', 'Soliman']
     return random.choice(first_names) + " " + random.choice(last_names)
+
 
 def split_dataframe_by_percentages(percentages_labels: dict, dataframe: pd.DataFrame, column: str):
     first_index = 0
